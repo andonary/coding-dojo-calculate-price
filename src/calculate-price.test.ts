@@ -4,10 +4,22 @@ function extractValueWithoutCurrency(articlePrice: string) {
     return _.toNumber(articlePrice.substring(0, articlePrice.length - 1));
 }
 
+function valueTimesQty(value, quantity: number) {
+    return value * quantity;
+}
+
+function taxes(vat: string) {
+    return 1 + extractValueWithoutCurrency(vat) / 100;
+}
+
+function calculateWithVAT(value, quantity: number, vat: string) {
+    return (valueTimesQty(value, quantity) * taxes(vat)).toFixed(2) + "€";
+}
+
 function calculatePrice(articlePrice: string, quantity: number, vat: string | undefined) {
     const value = extractValueWithoutCurrency(articlePrice);
-    if (vat) return ((value * quantity) * (1 + extractValueWithoutCurrency(vat)/100)).toFixed(2) + "€";
-    return value * quantity + "€";
+    if (vat) return calculateWithVAT(value, quantity, vat);
+    return valueTimesQty(value, quantity) + "€";
 }
 
 interface InputCalculate {
