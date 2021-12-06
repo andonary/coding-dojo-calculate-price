@@ -4,8 +4,9 @@ function extractValueWithoutCurrency(articlePrice: string) {
     return _.toNumber(articlePrice.substring(0, articlePrice.length - 1));
 }
 
-function calculatePrice(articlePrice: string, quantity: number) {
+function calculatePrice(articlePrice: string, quantity: number, vat: string | undefined) {
     const value = extractValueWithoutCurrency(articlePrice);
+    if (vat) return ((value * quantity) * (1 + extractValueWithoutCurrency(vat)/100)).toFixed(2) + "€";
     return value * quantity + "€";
 }
 
@@ -16,9 +17,9 @@ interface InputCalculate {
 
 describe('Kata', () => {
     const articlePrice = "1.21€";
-    function actPriceAndExpect(options: InputCalculate, expectedResult) {
+    function actPriceAndExpect(options: { quantity: number; articlePrice: string; vat?: string }, expectedResult) {
         // Act
-        const result = calculatePrice(options.articlePrice, options.quantity);
+        const result = calculatePrice(options.articlePrice, options.quantity, options?.vat);
 
         // Assert
         expect(result).toEqual(expectedResult);
@@ -38,5 +39,15 @@ describe('Kata', () => {
         const noreductionPrice = "1.21€";
 
         actPriceAndExpect({articlePrice, quantity}, noreductionPrice);
+    });
+
+    test('no reduction 3*1.21 with 5% VAT equals 3.831€', async () => {
+        // Arrange
+        const quantity = 3;
+        const noreductionPrice = "3.81€";
+        const vat = "5%";
+
+        // Act
+        actPriceAndExpect({articlePrice, quantity, vat}, noreductionPrice)
     });
 });
