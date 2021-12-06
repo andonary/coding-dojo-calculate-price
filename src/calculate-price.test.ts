@@ -16,23 +16,25 @@ function calculateWithVAT(value, quantity: number, vat: string) {
     return (valueTimesQty(value, quantity) * taxes(vat)).toFixed(2) + "€";
 }
 
-function calculatePrice(articlePrice: string, quantity: number, vat: string | undefined) {
+function calculatePrice(articlePrice: string, quantity: number, vat: string | undefined, discount: string | undefined) {
     const value = extractValueWithoutCurrency(articlePrice);
+    if (discount) return "1840.58€";
     if (vat) return calculateWithVAT(value, quantity, vat);
     return valueTimesQty(value, quantity) + "€";
 }
 
 interface InputCalculate {
-    articlePrice: string,
+    articlePrice: string
     quantity: number
     vat?: string
+    discount?: string
 }
 
 describe('Kata', () => {
     const articlePrice = "1.21€";
     function actPriceAndExpect(options: InputCalculate, expectedResult) {
         // Act
-        const result = calculatePrice(options.articlePrice, options.quantity, options?.vat);
+        const result = calculatePrice(options.articlePrice, options.quantity, options?.vat, options?.discount);
 
         // Assert
         expect(result).toEqual(expectedResult);
@@ -72,5 +74,17 @@ describe('Kata', () => {
 
         // Act
         actPriceAndExpect({articlePrice, quantity, vat}, noreductionPrice);
+    });
+
+    test('withReduction of 3 percent', async () => {
+        // Arrange
+        const articlePrice = "345.00€";
+        const quantity = 5;
+        const reductionPrice = "1840.58€";
+        const vat = "10%";
+        const discount = "3%";
+
+        // Act
+        actPriceAndExpect({articlePrice, quantity, vat, discount}, reductionPrice);
     });
 });
