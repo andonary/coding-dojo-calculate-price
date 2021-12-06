@@ -16,9 +16,16 @@ function calculateWithVAT(value, quantity: number, vat: string) {
     return (valueTimesQty(value, quantity) * taxes(vat)).toFixed(2) + "€";
 }
 
+function calculateWithReduction(value, quantity: number, vat: string, discount: string) {
+    const priceVAT = calculateWithVAT(value, quantity, vat);
+    const result = extractValueWithoutCurrency(priceVAT);
+    const discountValue = extractValueWithoutCurrency(discount) / 100;
+    return (result * (1 - discountValue)).toFixed(2) + "€";
+}
+
 function calculatePrice(articlePrice: string, quantity: number, vat: string | undefined, discount: string | undefined) {
     const value = extractValueWithoutCurrency(articlePrice);
-    if (discount) return "1840.58€";
+    if (discount) return calculateWithReduction(value, quantity, vat, discount);
     if (vat) return calculateWithVAT(value, quantity, vat);
     return valueTimesQty(value, quantity) + "€";
 }
