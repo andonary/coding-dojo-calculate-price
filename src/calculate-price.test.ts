@@ -1,7 +1,11 @@
 import _ from "lodash";
 
+function extractValueWithoutCurrency(articlePrice: string) {
+    return _.toNumber(articlePrice.substring(0, articlePrice.length - 1));
+}
+
 function calculatePrice(articlePrice: string, quantity: number) {
-    const value = _.toNumber(articlePrice.substring(0, articlePrice.length - 1));
+    const value = extractValueWithoutCurrency(articlePrice);
     return value * quantity + "€";
 }
 
