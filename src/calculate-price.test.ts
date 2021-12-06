@@ -25,11 +25,12 @@ function calculatePrice(articlePrice: string, quantity: number, vat: string | un
 interface InputCalculate {
     articlePrice: string,
     quantity: number
+    vat?: string
 }
 
 describe('Kata', () => {
     const articlePrice = "1.21€";
-    function actPriceAndExpect(options: { quantity: number; articlePrice: string; vat?: string }, expectedResult) {
+    function actPriceAndExpect(options: InputCalculate, expectedResult) {
         // Act
         const result = calculatePrice(options.articlePrice, options.quantity, options?.vat);
 
@@ -60,6 +61,16 @@ describe('Kata', () => {
         const vat = "5%";
 
         // Act
-        actPriceAndExpect({articlePrice, quantity, vat}, noreductionPrice)
+        actPriceAndExpect({articlePrice, quantity, vat}, noreductionPrice);
+    });
+
+    test('no reduction 3*1.21 with 20% VAT equals 4.36€', async () => {
+        // Arrange
+        const quantity = 3;
+        const noreductionPrice = "4.36€";
+        const vat = "20%";
+
+        // Act
+        actPriceAndExpect({articlePrice, quantity, vat}, noreductionPrice);
     });
 });
