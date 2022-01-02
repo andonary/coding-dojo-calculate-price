@@ -19,5 +19,8 @@
     "url": "git@gitlab.com:vrtice/vrtice-tech-lunch/coding-dojo.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
 }
